@@ -13,6 +13,10 @@ requests = []
 affiliations = []
 facilities = []
 
+@app.get('/')
+def get_users():
+    return users
+
 
 @app.post('/register', status_code=200)
 def register(auth_details: AuthDetails):
