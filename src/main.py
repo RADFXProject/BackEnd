@@ -1,9 +1,20 @@
 from fastapi import FastAPI, Depends, HTTPException
 from .auth import AuthHandler
-from .schemas import AuthDetails, Facility, User, Affiliation, Project, Request
-
+from .schemas import AuthDetails, CreateUserDetails, Facility, User, Affiliation, Project, Request
+from fastapi.middleware.cors import CORSMiddleware
+from .MessageGenerator import MessageGenerator
 
 app = FastAPI(title="Radfx API")
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 auth_handler = AuthHandler()
@@ -19,14 +30,15 @@ def get_users():
 
 
 @app.post('/register', status_code=200)
-def register(auth_details: AuthDetails):
+def register(auth_details: CreateUserDetails):
     if any(x['username'] == auth_details.username for x in users):
         raise HTTPException(status_code=400, detail='Username is taken')
     hashed_password = auth_handler.get_password_hash(auth_details.password)
     users.append({
-        'username': auth_details.username,
+        'username': auth_details.email,
         'password': hashed_password    
     })
+    MessageGenerator.welcomeTester(auth_details.email)
     return
 
 

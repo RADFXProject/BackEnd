@@ -8,6 +8,12 @@ class AuthDetails(BaseModel):
     username: str
     password: str
 
+class CreateUserDetails(BaseModel):
+    email: str
+    first_name: str
+    last_name: str
+    password: str
+
 class Facility(BaseModel):
     id: int
     name: str
