@@ -14,6 +14,9 @@ class CreateUserDetails(BaseModel):
     last_name: str
     password: str
 
+    class Config:
+        orm_mode = True
+
 class Facility(BaseModel):
     id: int
     name: str
@@ -39,7 +42,6 @@ class User(BaseModel):
     disabled_at: str
     deleted_at: str
     role: str
-    
 
 class Affiliation(BaseModel):
     id: str
@@ -79,4 +81,10 @@ class Request(BaseModel):
     energy_level: str
     ions: str
     integrator_id: str
-    
+
+#Evan 1/24/22 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    user: str
+

@@ -1,7 +1,14 @@
 from fastapi import FastAPI, Depends, HTTPException
-from .auth import AuthHandler
-from .schemas import AuthDetails, CreateUserDetails, Facility, User, Affiliation, Project, Request
 from fastapi.middleware.cors import CORSMiddleware
+from .auth import AuthHandler
+from .schemas import AuthDetails, Facility, User, Affiliation, Project, Request, CreateUserDetails
+from sqlalchemy.orm import Session
+
+from .database import get_db
+
+from .schemas import User, Token
+from .crud import get_user_by_login, create_user, get_user, get_users
+from .models import User as DbUser
 from .MessageGenerator import MessageGenerator
 
 app = FastAPI(title="Radfx API")
@@ -16,44 +23,44 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 auth_handler = AuthHandler()
 users = []
-projects = []
-requests = []
-affiliations = []
-facilities = []
-
-@app.get('/')
-def get_users():
-    return users
-
+dbUsers = []
 
 @app.post('/register', status_code=200)
-def register(auth_details: CreateUserDetails):
-    if any(x['username'] == auth_details.username for x in users):
+def register(user_login: CreateUserDetails, db: Session = Depends(get_db)):
+    if any(x['email'] == user_login.email for x in users):
         raise HTTPException(status_code=400, detail='Username is taken')
-    hashed_password = auth_handler.get_password_hash(auth_details.password)
-    users.append({
-        'username': auth_details.email,
-        'password': hashed_password    
-    })
-    MessageGenerator.welcomeTester(auth_details.email)
-    return
+    hashed_password = AuthHandler.get_password_hash(AuthHandler, user_login.password)
 
+    users.append({
+        'email': user_login.email,
+        'first_name': user_login.first_name,
+        'last_name': user_login.last_name,
+        'password': hashed_password
+    })
+
+    db_user = create_user(db, users.index(0))
+    
+    MessageGenerator.welcomeTester(user_login.email)
+
+    return db_user
+
+user = []
 
 @app.post('/login')
-def login(auth_details: AuthDetails):
-    user = None
-    for x in users:
-        if x['username'] == auth_details.username:
-            user = x
-            break
+def login(user_login: AuthDetails, db: Session = Depends(get_db)
+)-> Token:
+    db_user = get_user_by_login(db, user_login.username)
+    #for x in get_users():
+     #   if (x['user'] == user.user & x['passw'] == auth_handler.get_password_hash(auth_details.password)):
+      #      user = x
+       #     break
     
-    if (user is None) or (not auth_handler.verify_password(auth_details.password, user['password'])):
+    if (db_user is None) or (not auth_handler.verify_password(user_login.password, db_user.password)):
         raise HTTPException(status_code=401, detail='Invalid username and/or password')
-    token = auth_handler.encode_token(user['username'])
-    return { 'token': token }
+    token = auth_handler.encode_token(db_user.email)
+    return print(Token(access_token=token, token_type="bearer", user=db_user.email))
 
 
 @app.get('/unprotected')
