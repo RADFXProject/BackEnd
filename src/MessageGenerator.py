@@ -6,39 +6,32 @@ from email.mime.text import MIMEText
 class MessageGenerator():
     radfx_Address = "RadFxProject@hotmail.com"
     #adjust this to actual password when not on github
-    radfx_Password = "Dummy Password"
+    radfx_Password = "dummy password"
 
     def generateMessage(tar_address, text, text_subject):
         radfx_Address = MessageGenerator.radfx_Address       
         radfx_Password = MessageGenerator.radfx_Password      
         target_Address = tar_address  
 
-        host_Address = 'smtp-mail.outlook.com'   # Replace with yours
+        host_Address = 'smtp-mail.outlook.com'
         host_Port = 587             
 
-        # Connection with the server
         server = smtplib.SMTP(host=host_Address, port=host_Port)
         server.starttls()
         server.login(radfx_Address, radfx_Password)
 
-        # Creation of the MIMEMultipart Object
         message = MIMEMultipart("alternative")
 
-        # Setup of MIMEMultipart Object Header
         message['From'] = radfx_Address
         message['To'] = target_Address
         message['Subject'] = text_subject
 
-        # HTML Setup
         html = text
 
-        # Creation of a MIMEText Part
         htmlPart = MIMEText(html, 'html')
 
-        # Part attachment
         message.attach(htmlPart)
 
-        # Send Email and close connection
         server.send_message(message)
         server.quit()
         return
@@ -59,7 +52,7 @@ class MessageGenerator():
         MessageGenerator.generateMessage(t_address, m_text, t_subject)
         return
 
-    def welcomeTester( target):
+    def welcomeTester(target):
         t_subject = "Welcome To RADFX"
         m_text = """<html>
             <head>Good evening,</head>

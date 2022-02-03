@@ -23,7 +23,6 @@ class Facility(BaseModel):
     hours_of_operation: str
 
         
-    
 class User(BaseModel):
     id: int
     affiliation_id: int
@@ -39,7 +38,6 @@ class User(BaseModel):
     disabled_at: str
     deleted_at: str
     role: str
-    
 
 class Affiliation(BaseModel):
     id: str

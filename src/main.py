@@ -4,7 +4,18 @@ from .schemas import AuthDetails, CreateUserDetails, Facility, User, Affiliation
 from fastapi.middleware.cors import CORSMiddleware
 from .MessageGenerator import MessageGenerator
 
+#import mysql.connector
+
 app = FastAPI(title="Radfx API")
+
+""""
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="radfx"
+)
+"""
 
 origins = ["*"]
 
@@ -38,6 +49,19 @@ def register(auth_details: CreateUserDetails):
         'username': auth_details.email,
         'password': hashed_password    
     })
+
+    """
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO user (user_id, affiliation_id, first_name, phone, email, created_at, disabled_at, role_id ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    val = ("0", "0", "666", "666", "666", "666", "666", "0")
+    mycursor.execute(sql, val)
+
+    mydb.commit()
+
+    print(mycursor.rowcount, "record inserted.")
+    """
+
     MessageGenerator.welcomeTester(auth_details.email)
     return
 
