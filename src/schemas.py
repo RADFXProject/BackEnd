@@ -77,4 +77,9 @@ class Request(BaseModel):
     energy_level: str
     ions: str
     integrator_id: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+    user: str
     

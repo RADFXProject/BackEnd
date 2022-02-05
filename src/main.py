@@ -1,21 +1,21 @@
 from fastapi import FastAPI, Depends, HTTPException
 from .auth import AuthHandler
-from .schemas import AuthDetails, CreateUserDetails, Facility, User, Affiliation, Project, Request
+from .schemas import AuthDetails, CreateUserDetails, Facility, User, Affiliation, Project, Request, Token
 from fastapi.middleware.cors import CORSMiddleware
 from .MessageGenerator import MessageGenerator
 
-#import mysql.connector
+import mysql.connector
 
 app = FastAPI(title="Radfx API")
 
-""""
+
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="",
     database="radfx"
 )
-"""
+
 
 origins = ["*"]
 
@@ -42,42 +42,48 @@ def get_users():
 
 @app.post('/register', status_code=200)
 def register(auth_details: CreateUserDetails):
-    if any(x['username'] == auth_details.username for x in users):
-        raise HTTPException(status_code=400, detail='Username is taken')
-    hashed_password = auth_handler.get_password_hash(auth_details.password)
-    users.append({
-        'username': auth_details.email,
-        'password': hashed_password    
-    })
-
-    """
     mycursor = mydb.cursor()
-
-    sql = "INSERT INTO user (user_id, affiliation_id, first_name, phone, email, created_at, disabled_at, role_id ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    val = ("0", "0", "666", "666", "666", "666", "666", "0")
+    
+    
+    sql = "SELECT * FROM user WHERE email = %s"
+    val = (auth_details.email, )
+    mycursor.execute(sql, val)
+    mycursor.fetchone()
+    if mycursor.rowcount > 0:
+        raise HTTPException(status_code=400, detail='Username is taken')
+    
+    hashed_password = auth_handler.get_password_hash(auth_details.password)
+    print(hashed_password)
+    sql = "INSERT INTO user (first_name, last_name, email, role_id, password) VALUES (%s, %s, %s, %s, %s)"
+    val = (auth_details.first_name, auth_details.last_name, auth_details.email, "0", hashed_password)
     mycursor.execute(sql, val)
 
     mydb.commit()
 
     print(mycursor.rowcount, "record inserted.")
-    """
 
     MessageGenerator.welcomeTester(auth_details.email)
     return
 
 
 @app.post('/login')
-def login(auth_details: AuthDetails):
+def login(auth_details: AuthDetails):    
     user = None
-    for x in users:
-        if x['username'] == auth_details.username:
-            user = x
-            break
     
-    if (user is None) or (not auth_handler.verify_password(auth_details.password, user['password'])):
+    mycursor = mydb.cursor()
+
+    sql = "SELECT password FROM user WHERE email = %s"
+    val = (auth_details.username, )
+    mycursor.execute(sql, val)
+    myresults = mycursor.fetchone()
+    tvar = auth_handler.get_password_hash(auth_details.password)
+    tvar2 = auth_handler.get_password_hash(auth_details.password)
+
+    if (mycursor.rowcount == 0) or (not auth_handler.verify_password(auth_details.password, myresults[0])):
         raise HTTPException(status_code=401, detail='Invalid username and/or password')
-    token = auth_handler.encode_token(user['username'])
-    return { 'token': token }
+
+    token = auth_handler.encode_token(auth_details.username)
+    return print(Token(access_token=token, token_type="bearer", user=auth_details.username))
 
 
 @app.get('/unprotected')
