@@ -53,7 +53,6 @@ def register(auth_details: CreateUserDetails):
         raise HTTPException(status_code=400, detail='Username is taken')
     
     hashed_password = auth_handler.get_password_hash(auth_details.password)
-    print(hashed_password)
     sql = "INSERT INTO user (first_name, last_name, email, role_id, password) VALUES (%s, %s, %s, %s, %s)"
     val = (auth_details.first_name, auth_details.last_name, auth_details.email, "0", hashed_password)
     mycursor.execute(sql, val)
@@ -76,8 +75,6 @@ def login(auth_details: AuthDetails):
     val = (auth_details.username, )
     mycursor.execute(sql, val)
     myresults = mycursor.fetchone()
-    tvar = auth_handler.get_password_hash(auth_details.password)
-    tvar2 = auth_handler.get_password_hash(auth_details.password)
 
     if (mycursor.rowcount == 0) or (not auth_handler.verify_password(auth_details.password, myresults[0])):
         raise HTTPException(status_code=401, detail='Invalid username and/or password')
@@ -284,8 +281,32 @@ def get_projects():
     return projects
 
 
-@app.post('/project/{project_id}/request', status_code=200)
-def post_request(project_id, response_details: Request):
+@app.post('/post_request', status_code=200)
+def post_request(response_details: Request):
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO purpose (purpose_id, purpose_of_test, description, energy_level, requested_ions, vacuum, public) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    val = ("0", response_details.purpose_of_test, response_details.description, response_details.energy_level, response_details.requested_ions, response_details.vacuum, response_details.public)
+    mycursor.execute(sql, val)
+
+    purp_id = mycursor.lastrowid
+
+    mydb.commit()
+    
+    
+    print(mycursor.rowcount, "record inserted.")
+
+    sql = "INSERT INTO request (total_hours, user_id, earliest_date, purpose_id, approved, retracted, time_used) VALUES ( %s, %s, %s, %s, %s, %s, %s)"
+    val = (response_details.total_hours, "30", response_details.earliest_date, purp_id, response_details.approved, response_details.retracted, response_details.time_used)
+    mycursor.execute(sql, val)
+
+    mydb.commit()
+
+    print(mycursor.rowcount, "record inserted.")
+    
+    
+    """ Legacy Code
+    
     requests.append({
         'id': len(requests),
         'project_id': int(project_id),
@@ -294,6 +315,7 @@ def post_request(project_id, response_details: Request):
         'ions': response_details.ions,
         'integrator_id': response_details.integrator_id
     })
+    """
     return
 
 

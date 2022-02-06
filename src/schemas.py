@@ -48,6 +48,8 @@ class Affiliation(BaseModel):
     
     
 class Project(BaseModel):
+    
+    """ Legacy Code
     id: int
     #created_by: {}
     project_name: str
@@ -69,14 +71,31 @@ class Project(BaseModel):
     test_end: str
     #requests: []
     is_public: str
+    """
     
 class Request(BaseModel):
+    id: int
+    total_hours: int
+    facility_id: str
+    user_id: int
+    earliest_date: str
+    approved: int
+    retracted: int
+    time_used: int
+    purpose_of_test: str
+    description: str
+    energy_level: str
+    requested_ions: str
+    vacuum: int
+    public: int
+    """ Legacy code
     id: int
     project_id: int
     facility_id: str
     energy_level: str
     ions: str
     integrator_id: str
+    """
 
 class Token(BaseModel):
     access_token: str

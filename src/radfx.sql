@@ -111,7 +111,7 @@ CREATE TABLE `purpose` (
   `description` varchar(2500) DEFAULT NULL,
   `energy_level` varchar(25) DEFAULT NULL,
   `requested_ions` varchar(50) DEFAULT NULL,
-  `vacume` tinyint(1) DEFAULT 0,
+  `vacuum` tinyint(1) DEFAULT 0,
   `public` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
