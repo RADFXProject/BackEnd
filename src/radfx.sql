@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 05, 2022 at 02:37 AM
+-- Generation Time: Feb 13, 2022 at 11:31 PM
 -- Server version: 10.4.22-MariaDB
--- PHP Version: 8.1.2
+-- PHP Version: 7.4.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -48,6 +48,13 @@ CREATE TABLE `affiliation` (
   `secondary_email` varchar(100) DEFAULT NULL,
   `secondary_phone` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `affiliation`
+--
+
+INSERT INTO `affiliation` (`affiliation_id`, `name`, `description`, `primary_email`, `primary_phone`, `secondary_email`, `secondary_phone`) VALUES
+('0', 'none', 'No affiliation assigned yet', 'none', 'none', 'none', 'none');
 
 -- --------------------------------------------------------
 
@@ -155,7 +162,10 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`role_id`, `name`, `permission_id`, `description`, `created_at`, `updated_at`, `disabled_at`, `disabled`) VALUES
-('0', 'tester', '1', 'A user who has been authorized as a tester by admin', NULL, NULL, NULL, 0);
+('0', 'waiting', '1', 'A user who has not been authorized with a role by admin', '2022-02-11 18:29:01', '2022-02-11 18:29:01', NULL, 0),
+('1', 'tester', '1', 'A user who has been authorized as a tester by admin', '2022-02-11 18:29:26', '2022-02-11 18:29:26', NULL, 0),
+('2', 'integrator', '1', 'A user capable of scheduling requests', '2022-02-11 18:29:26', '2022-02-11 18:29:26', NULL, 0),
+('3', 'admin', '1', 'A user capable of scheduling requests, approving users, and making form adjustments', '2022-02-11 18:29:26', '2022-02-11 18:29:26', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -186,7 +196,7 @@ CREATE TABLE `user` (
   `email` varchar(100) DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
   `disabled_at` datetime DEFAULT NULL,
-  `role_id` varchar(4) NOT NULL DEFAULT '1',
+  `role_id` varchar(4) DEFAULT '0',
   `password` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -195,8 +205,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`user_id`, `affiliation_id`, `first_name`, `last_name`, `phone`, `email`, `created_at`, `disabled_at`, `role_id`, `password`) VALUES
-(30, NULL, 'eeee', 'eeee', NULL, 'Radfxproject@hotmaail.com', '2022-02-04 19:34:39', NULL, '0', '$2b$12$WeaxhWva7UYgWly3wzD.rOh0ylqLcDqtncauBAqDSOlxnkZ6ey/N2'),
-(31, NULL, 'eeee', 'eeee', NULL, 'Radfxproject@hotmail.com', '2022-02-04 19:59:29', NULL, '0', '$2b$12$XTp9i.tB4vWwp2ZnginCW.nbmIKxvkCNEfkZgl51ebpu4Hp57ZUSK');
+(30, NULL, 'eeee', 'eeee', NULL, 'Radfxproject@hotmaail.com', '2022-02-04 19:34:39', NULL, '3', '$2y$10$fBBN8UOhDmSs6sXQI0ZYze/s2RIowylYb22Z/NBsD8ewhaBYA5.Bu'),
+(113, '0', 'Eeee4@', 'Eeee4@', 'Eeee4@Eeee4', 'Eeee4@', '2022-02-12 11:55:14', NULL, '0', '$2y$10$mYHZFGfr8Be1NTcje4eLDOEJn8ZVblfcqUTfmPx6DbWyURinvTO9O'),
+(132, '0', 'Eeee4@', 'Eeee4@', 'Eeee4@', 'Radfxproject@hotmail.com', '2022-02-12 17:46:17', NULL, '0', '$2y$10$G0sE6u0nfy4hX/m2vBVeTeqCUBi9Vd05G6sT1zfAK9CQvk1yAV8ea');
 
 -- --------------------------------------------------------
 
@@ -272,8 +283,8 @@ ALTER TABLE `scheduled`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`user_id`),
-  ADD KEY `user_FK` (`role_id`),
-  ADD KEY `user_FK_1` (`affiliation_id`);
+  ADD KEY `user_FK_1` (`affiliation_id`),
+  ADD KEY `user_FK` (`role_id`) USING BTREE;
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -301,7 +312,7 @@ ALTER TABLE `scheduled`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
 
 --
 -- Constraints for dumped tables
