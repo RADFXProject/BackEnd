@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2022 at 11:31 PM
+-- Generation Time: Feb 14, 2022 at 02:39 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -86,6 +86,15 @@ CREATE TABLE `facility` (
   `switching_times` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `facility`
+--
+
+INSERT INTO `facility` (`facility_id`, `name`, `description`, `affiliation_id`, `operation_hours`, `switching_times`) VALUES
+('0', 'Berkeley', 'Lawrence Berkeley National Laboratory', '0', NULL, NULL),
+('1', 'A&M', 'Texas A&M University', '0', NULL, NULL),
+('2', 'NASA', 'NASA Space Radiation Laboratory', '0', NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -113,7 +122,7 @@ INSERT INTO `permission` (`permission_id`, `name`, `description`) VALUES
 --
 
 CREATE TABLE `purpose` (
-  `purpose_id` varchar(4) NOT NULL,
+  `purpose_id` int(11) NOT NULL,
   `purpose_of_test` varchar(500) DEFAULT NULL,
   `description` varchar(2500) DEFAULT NULL,
   `energy_level` varchar(25) DEFAULT NULL,
@@ -121,6 +130,13 @@ CREATE TABLE `purpose` (
   `vacuum` tinyint(1) DEFAULT 0,
   `public` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `purpose`
+--
+
+INSERT INTO `purpose` (`purpose_id`, `purpose_of_test`, `description`, `energy_level`, `requested_ions`, `vacuum`, `public`) VALUES
+(28, 'a', 's', 'd', 'e', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -134,11 +150,18 @@ CREATE TABLE `request` (
   `facility_id` varchar(4) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `earliest_date` datetime DEFAULT NULL,
-  `purpose_id` varchar(4) DEFAULT NULL,
+  `purpose_id` int(11) NOT NULL,
   `approved` tinyint(1) DEFAULT NULL,
   `retracted` tinyint(1) DEFAULT 0,
   `time_used` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `request`
+--
+
+INSERT INTO `request` (`request_id`, `total_hours`, `facility_id`, `user_id`, `earliest_date`, `purpose_id`, `approved`, `retracted`, `time_used`) VALUES
+(9, 1, '0', 30, '2022-02-23 00:00:00', 28, NULL, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -262,7 +285,7 @@ ALTER TABLE `request`
   ADD PRIMARY KEY (`request_id`),
   ADD KEY `request_FK` (`user_id`),
   ADD KEY `request_FK_1` (`facility_id`),
-  ADD KEY `request_FK_2` (`purpose_id`);
+  ADD KEY `purpose_id` (`purpose_id`);
 
 --
 -- Indexes for table `role`
@@ -297,10 +320,16 @@ ALTER TABLE `auto_email`
   MODIFY `auto_email_id` int(4) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `purpose`
+--
+ALTER TABLE `purpose`
+  MODIFY `purpose_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+
+--
 -- AUTO_INCREMENT for table `request`
 --
 ALTER TABLE `request`
-  MODIFY `request_id` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `request_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `scheduled`
