@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 14, 2022 at 02:39 AM
+-- Generation Time: Feb 17, 2022 at 06:00 PM
 -- Server version: 10.4.22-MariaDB
--- PHP Version: 7.4.27
+-- PHP Version: 8.1.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -98,6 +98,18 @@ INSERT INTO `facility` (`facility_id`, `name`, `description`, `affiliation_id`, 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `ion`
+--
+
+CREATE TABLE `ion` (
+  `ion_id` int(11) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  `max_power` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `permission`
 --
 
@@ -162,6 +174,18 @@ CREATE TABLE `request` (
 
 INSERT INTO `request` (`request_id`, `total_hours`, `facility_id`, `user_id`, `earliest_date`, `purpose_id`, `approved`, `retracted`, `time_used`) VALUES
 (9, 1, '0', 30, '2022-02-23 00:00:00', 28, NULL, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `requet_ion`
+--
+
+CREATE TABLE `requet_ion` (
+  `request_id` int(11) NOT NULL,
+  `ion_id` int(11) NOT NULL,
+  `power` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -267,6 +291,12 @@ ALTER TABLE `facility`
   ADD KEY `facility_FK` (`affiliation_id`);
 
 --
+-- Indexes for table `ion`
+--
+ALTER TABLE `ion`
+  ADD PRIMARY KEY (`ion_id`);
+
+--
 -- Indexes for table `permission`
 --
 ALTER TABLE `permission`
@@ -286,6 +316,13 @@ ALTER TABLE `request`
   ADD KEY `request_FK` (`user_id`),
   ADD KEY `request_FK_1` (`facility_id`),
   ADD KEY `purpose_id` (`purpose_id`);
+
+--
+-- Indexes for table `requet_ion`
+--
+ALTER TABLE `requet_ion`
+  ADD KEY `request_id` (`request_id`),
+  ADD KEY `ion_id` (`ion_id`);
 
 --
 -- Indexes for table `role`
@@ -318,6 +355,12 @@ ALTER TABLE `user`
 --
 ALTER TABLE `auto_email`
   MODIFY `auto_email_id` int(4) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ion`
+--
+ALTER TABLE `ion`
+  MODIFY `ion_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `purpose`
