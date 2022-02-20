@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2022 at 06:00 PM
+-- Generation Time: Feb 20, 2022 at 08:59 PM
 -- Server version: 10.4.22-MariaDB
--- PHP Version: 8.1.2
+-- PHP Version: 7.4.27
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -104,8 +104,19 @@ INSERT INTO `facility` (`facility_id`, `name`, `description`, `affiliation_id`, 
 CREATE TABLE `ion` (
   `ion_id` int(11) NOT NULL,
   `name` varchar(60) NOT NULL,
-  `max_power` int(11) NOT NULL
+  `max_power` int(11) NOT NULL,
+  `facility_id` varchar(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `ion`
+--
+
+INSERT INTO `ion` (`ion_id`, `name`, `max_power`, `facility_id`) VALUES
+(1, '4He', 60, '0'),
+(2, '14N', 210, '1'),
+(3, '20Ne', 300, '0'),
+(4, '40Ar', 599, '0');
 
 -- --------------------------------------------------------
 
@@ -148,7 +159,11 @@ CREATE TABLE `purpose` (
 --
 
 INSERT INTO `purpose` (`purpose_id`, `purpose_of_test`, `description`, `energy_level`, `requested_ions`, `vacuum`, `public`) VALUES
-(28, 'a', 's', 'd', 'e', 1, 0);
+(28, 'a', 's', 'd', 'e', 1, 0),
+(29, NULL, NULL, NULL, NULL, NULL, 0),
+(30, NULL, NULL, NULL, NULL, NULL, 0),
+(31, NULL, NULL, NULL, NULL, NULL, 0),
+(32, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -162,30 +177,73 @@ CREATE TABLE `request` (
   `facility_id` varchar(4) DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `earliest_date` datetime DEFAULT NULL,
-  `purpose_id` int(11) NOT NULL,
   `approved` tinyint(1) DEFAULT NULL,
   `retracted` tinyint(1) DEFAULT 0,
-  `time_used` tinyint(1) DEFAULT 0
+  `time_used` tinyint(1) DEFAULT 0,
+  `purpose_of_test` varchar(500) DEFAULT NULL,
+  `description` varchar(2500) DEFAULT NULL,
+  `energy_level` varchar(25) DEFAULT NULL,
+  `vacuum` tinyint(1) DEFAULT 0,
+  `public` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `request`
 --
 
-INSERT INTO `request` (`request_id`, `total_hours`, `facility_id`, `user_id`, `earliest_date`, `purpose_id`, `approved`, `retracted`, `time_used`) VALUES
-(9, 1, '0', 30, '2022-02-23 00:00:00', 28, NULL, 0, 0);
+INSERT INTO `request` (`request_id`, `total_hours`, `facility_id`, `user_id`, `earliest_date`, `approved`, `retracted`, `time_used`, `purpose_of_test`, `description`, `energy_level`, `vacuum`, `public`) VALUES
+(23, 0, '0', 30, '0000-00-00 00:00:00', NULL, 0, 0, '', '', '', 0, 0),
+(24, 1111, '0', 30, '2022-03-03 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 0),
+(25, 1111, '0', 30, '0000-00-00 00:00:00', NULL, 0, 0, '', '', '', 0, 0),
+(26, 0, '0', 30, '0000-00-00 00:00:00', NULL, 0, 0, '', '', '', 0, 0),
+(27, 1111, '0', 30, '2022-03-09 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 1),
+(28, 1111, '1', 30, '2022-03-02 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 1),
+(29, 1111, '1', 30, '2022-03-10 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 1),
+(105, 0, '0', 30, '0000-00-00 00:00:00', NULL, 0, 0, '', '', '', 0, 0),
+(106, 111, '0', 30, '2022-03-08 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `requet_ion`
+-- Table structure for table `request_ion`
 --
 
-CREATE TABLE `requet_ion` (
+CREATE TABLE `request_ion` (
+  `request_ion_id` int(11) NOT NULL,
   `request_id` int(11) NOT NULL,
   `ion_id` int(11) NOT NULL,
   `power` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `request_ion`
+--
+
+INSERT INTO `request_ion` (`request_ion_id`, `request_id`, `ion_id`, `power`) VALUES
+(2, 23, 1, 100),
+(3, 23, 1, 100),
+(4, 23, 1, 100),
+(5, 23, 1, 100),
+(6, 23, 1, 100),
+(22, 91, 1, 12312312),
+(23, 97, 1, 2147483647),
+(24, 98, 1, 1123131),
+(25, 98, 3, 0),
+(26, 100, 1, 12312314),
+(40, 119, 1, 999),
+(50, 128, 1, 1231),
+(58, 132, 1, 12313),
+(59, 132, 4, 12313),
+(60, 133, 1, 12313),
+(61, 133, 4, 12313),
+(62, 134, 1, 132),
+(63, 134, 4, 1233),
+(64, 135, 1, 13),
+(65, 135, 4, 12313),
+(66, 136, 1, 1231),
+(67, 136, 4, 1313),
+(68, 137, 1, 1231),
+(69, 137, 4, 12313);
 
 -- --------------------------------------------------------
 
@@ -253,8 +311,7 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`user_id`, `affiliation_id`, `first_name`, `last_name`, `phone`, `email`, `created_at`, `disabled_at`, `role_id`, `password`) VALUES
 (30, NULL, 'eeee', 'eeee', NULL, 'Radfxproject@hotmaail.com', '2022-02-04 19:34:39', NULL, '3', '$2y$10$fBBN8UOhDmSs6sXQI0ZYze/s2RIowylYb22Z/NBsD8ewhaBYA5.Bu'),
-(113, '0', 'Eeee4@', 'Eeee4@', 'Eeee4@Eeee4', 'Eeee4@', '2022-02-12 11:55:14', NULL, '0', '$2y$10$mYHZFGfr8Be1NTcje4eLDOEJn8ZVblfcqUTfmPx6DbWyURinvTO9O'),
-(132, '0', 'Eeee4@', 'Eeee4@', 'Eeee4@', 'Radfxproject@hotmail.com', '2022-02-12 17:46:17', NULL, '0', '$2y$10$G0sE6u0nfy4hX/m2vBVeTeqCUBi9Vd05G6sT1zfAK9CQvk1yAV8ea');
+(132, '0', 'Eeee4@', 'Eeee4@', 'Eeee4@', 'Radfxproject@hotmail.com', '2022-02-12 17:46:17', NULL, '1', '$2y$10$G0sE6u0nfy4hX/m2vBVeTeqCUBi9Vd05G6sT1zfAK9CQvk1yAV8ea');
 
 -- --------------------------------------------------------
 
@@ -294,7 +351,8 @@ ALTER TABLE `facility`
 -- Indexes for table `ion`
 --
 ALTER TABLE `ion`
-  ADD PRIMARY KEY (`ion_id`);
+  ADD PRIMARY KEY (`ion_id`),
+  ADD KEY `ion_FK_1` (`facility_id`);
 
 --
 -- Indexes for table `permission`
@@ -314,13 +372,13 @@ ALTER TABLE `purpose`
 ALTER TABLE `request`
   ADD PRIMARY KEY (`request_id`),
   ADD KEY `request_FK` (`user_id`),
-  ADD KEY `request_FK_1` (`facility_id`),
-  ADD KEY `purpose_id` (`purpose_id`);
+  ADD KEY `request_FK_1` (`facility_id`);
 
 --
--- Indexes for table `requet_ion`
+-- Indexes for table `request_ion`
 --
-ALTER TABLE `requet_ion`
+ALTER TABLE `request_ion`
+  ADD PRIMARY KEY (`request_ion_id`),
   ADD KEY `request_id` (`request_id`),
   ADD KEY `ion_id` (`ion_id`);
 
@@ -360,19 +418,25 @@ ALTER TABLE `auto_email`
 -- AUTO_INCREMENT for table `ion`
 --
 ALTER TABLE `ion`
-  MODIFY `ion_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `purpose`
 --
 ALTER TABLE `purpose`
-  MODIFY `purpose_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `purpose_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `request`
 --
 ALTER TABLE `request`
-  MODIFY `request_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `request_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
+
+--
+-- AUTO_INCREMENT for table `request_ion`
+--
+ALTER TABLE `request_ion`
+  MODIFY `request_ion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT for table `scheduled`
@@ -404,31 +468,10 @@ ALTER TABLE `facility`
   ADD CONSTRAINT `facility_FK` FOREIGN KEY (`affiliation_id`) REFERENCES `affiliation` (`affiliation_id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `request`
---
-ALTER TABLE `request`
-  ADD CONSTRAINT `request_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `request_FK_1` FOREIGN KEY (`facility_id`) REFERENCES `facility` (`facility_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `request_FK_2` FOREIGN KEY (`purpose_id`) REFERENCES `purpose` (`purpose_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `role`
 --
 ALTER TABLE `role`
   ADD CONSTRAINT `role_FK` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`permission_id`) ON UPDATE CASCADE;
-
---
--- Constraints for table `scheduled`
---
-ALTER TABLE `scheduled`
-  ADD CONSTRAINT `scheduled_FK` FOREIGN KEY (`request_id`) REFERENCES `request` (`request_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `user`
---
-ALTER TABLE `user`
-  ADD CONSTRAINT `user_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `user_FK_1` FOREIGN KEY (`affiliation_id`) REFERENCES `affiliation` (`affiliation_id`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
