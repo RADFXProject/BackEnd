@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 20, 2022 at 08:59 PM
+-- Generation Time: Feb 22, 2022 at 05:49 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -78,7 +78,7 @@ CREATE TABLE `auto_email` (
 --
 
 CREATE TABLE `facility` (
-  `facility_id` varchar(4) NOT NULL,
+  `facility_id` int(11) NOT NULL,
   `name` varchar(100) DEFAULT NULL,
   `description` varchar(100) DEFAULT NULL,
   `affiliation_id` varchar(4) DEFAULT NULL,
@@ -91,9 +91,9 @@ CREATE TABLE `facility` (
 --
 
 INSERT INTO `facility` (`facility_id`, `name`, `description`, `affiliation_id`, `operation_hours`, `switching_times`) VALUES
-('0', 'Berkeley', 'Lawrence Berkeley National Laboratory', '0', NULL, NULL),
-('1', 'A&M', 'Texas A&M University', '0', NULL, NULL),
-('2', 'NASA', 'NASA Space Radiation Laboratory', '0', NULL, NULL);
+(1, 'Berkeley', 'Lawrence Berkeley National Laboratory', '0', NULL, NULL),
+(2, 'A&M', 'Texas A&M University', '0', NULL, NULL),
+(3, 'NASA', 'NASA Space Radiation Laboratory', '0', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -113,10 +113,11 @@ CREATE TABLE `ion` (
 --
 
 INSERT INTO `ion` (`ion_id`, `name`, `max_power`, `facility_id`) VALUES
-(1, '4He', 60, '0'),
-(2, '14N', 210, '1'),
-(3, '20Ne', 300, '0'),
-(4, '40Ar', 599, '0');
+(1, '4He', 60, '1'),
+(2, '14N', 210, '2'),
+(3, '20Ne', 300, '1'),
+(4, '40Ar', 599, '1'),
+(6, 'h22', 12341, '3');
 
 -- --------------------------------------------------------
 
@@ -200,7 +201,8 @@ INSERT INTO `request` (`request_id`, `total_hours`, `facility_id`, `user_id`, `e
 (28, 1111, '1', 30, '2022-03-02 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 1),
 (29, 1111, '1', 30, '2022-03-10 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 1),
 (105, 0, '0', 30, '0000-00-00 00:00:00', NULL, 0, 0, '', '', '', 0, 0),
-(106, 111, '0', 30, '2022-03-08 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 1);
+(106, 111, '0', 30, '2022-03-08 00:00:00', NULL, 0, 0, '111', '11', '1', 1, 1),
+(138, 111, '1', 30, '0000-00-00 00:00:00', NULL, 0, 0, '', '', '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -415,10 +417,16 @@ ALTER TABLE `auto_email`
   MODIFY `auto_email_id` int(4) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `facility`
+--
+ALTER TABLE `facility`
+  MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `ion`
 --
 ALTER TABLE `ion`
-  MODIFY `ion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `purpose`
@@ -430,7 +438,7 @@ ALTER TABLE `purpose`
 -- AUTO_INCREMENT for table `request`
 --
 ALTER TABLE `request`
-  MODIFY `request_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
+  MODIFY `request_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
 
 --
 -- AUTO_INCREMENT for table `request_ion`
