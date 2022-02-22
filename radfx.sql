@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 22, 2022 at 05:49 AM
+-- Generation Time: Feb 22, 2022 at 08:55 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -115,9 +115,7 @@ CREATE TABLE `ion` (
 INSERT INTO `ion` (`ion_id`, `name`, `max_power`, `facility_id`) VALUES
 (1, '4He', 60, '1'),
 (2, '14N', 210, '2'),
-(3, '20Ne', 300, '1'),
-(4, '40Ar', 599, '1'),
-(6, 'h22', 12341, '3');
+(3, '20Ne', 300, '1');
 
 -- --------------------------------------------------------
 
@@ -235,17 +233,11 @@ INSERT INTO `request_ion` (`request_ion_id`, `request_id`, `ion_id`, `power`) VA
 (40, 119, 1, 999),
 (50, 128, 1, 1231),
 (58, 132, 1, 12313),
-(59, 132, 4, 12313),
 (60, 133, 1, 12313),
-(61, 133, 4, 12313),
 (62, 134, 1, 132),
-(63, 134, 4, 1233),
 (64, 135, 1, 13),
-(65, 135, 4, 12313),
 (66, 136, 1, 1231),
-(67, 136, 4, 1313),
-(68, 137, 1, 1231),
-(69, 137, 4, 12313);
+(68, 137, 1, 1231);
 
 -- --------------------------------------------------------
 
@@ -420,13 +412,13 @@ ALTER TABLE `auto_email`
 -- AUTO_INCREMENT for table `facility`
 --
 ALTER TABLE `facility`
-  MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `ion`
 --
 ALTER TABLE `ion`
-  MODIFY `ion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ion_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `purpose`
